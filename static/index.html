@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+           
+        }
+
+        h1, h2 {
+            color: #075e54;
+        }
+
+        h1 {
+            margin-bottom: 0;
+        }
+
+        form {
+            display: flex;
+            margin-top: 10px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 5px;
+            margin-right: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #25d366;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        hr {
+            width: 100%;
+            border: none;
+            height: 1px;
+            background-color: #e0e0e0;
+            margin: 15px 0;
+        }
+
+        ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        display: inline-block;
+        width: auto;
+        }
+
+        li {
+        background-color: #ffffff;
+        border: 1px solid #ddd;
+        padding: 7px;
+        margin-bottom: 5px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        font-size: 16px;
+        display: block; /* Make each li a block-level element */
+        white-space: pre-line; /* Prevent line breaks within li */
+        }
+    </style>
+</head>
+<body>
+    <h1>Chat Room for Us</h1>
+    <h2>Your ID: <span id="ws-id"></span></h2>
+    <form action="" onsubmit="sendMessage(event)">
+        <input type="text" id="messageText" autocomplete="off" placeholder="Message">
+        <button>Send</button>
+    </form>
+    <hr>
+    <ul id='messages'></ul>
+    <script>
+        var userInput = prompt("Enter your Name:");
+        var client_id = userInput
+        document.querySelector("#ws-id").textContent = userInput;
+        var ws = new WebSocket(`ws://localhost:8000/ws/${client_id}`);
+        ws.onmessage = function(event) {
+            var messages = document.getElementById('messages')
+            var message = document.createElement('li')
+            var content = document.createTextNode(event.data)
+            message.appendChild(content)
+            messages.appendChild(message)
+        };
+        function sendMessage(event) {
+            var input = document.getElementById("messageText")
+            ws.send(input.value)
+            input.value = ''
+            event.preventDefault()
+        }
+    </script>
+</body>
+</html>
